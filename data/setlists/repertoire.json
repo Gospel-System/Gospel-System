@@ -4,7 +4,9 @@
   "parts": [
     {
       "name": "Répertoire",
-      "songIds": []
+      "songIds": [
+        "amazing-god"
+      ]
     }
   ]
 }
