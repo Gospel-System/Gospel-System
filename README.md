@@ -1,6 +1,6 @@
 # Gospel System
 
-Paroles et pistes audio de la chorale **Gospel System** : https://hasina-zazahkel.github.io/Gospel-System/
+Paroles et pistes audio de la chorale **Gospel System** : https://gospelsystem.github.io/Gospel-System/
 
 Ce dépôt ne contient que les **données**. Le code de l'app est commun avec Zovy Tononkira
 ([Zovy-Tononkira](https://github.com/Hasina-Zazahkel/Zovy-Tononkira), édition `gospel`).
