@@ -1,0 +1,31 @@
+{
+  "name": "gospel-system",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "npm run data:build && vite",
+    "build": "npm run data:build && vite build",
+    "preview": "vite preview",
+    "data:build": "tsx scripts/build-data.ts",
+    "data:format": "tsx scripts/build-data.ts --format",
+    "data:check": "tsx scripts/build-data.ts --check",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.10.6",
+    "@types/node": "^26.6.6",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5",
+    "vite-plugin-pwa": "^2.0.0",
+    "vitest": "^5.0.5"
+  },
+  "dependencies": {
+    "@fontsource/barlow-condensed": "^5.3.0",
+    "@preact/signals": "^2.11.4",
+    "jspdf": "^3.0.4",
+    "preact": "^11.1.1"
+  }
+}

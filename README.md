@@ -1,25 +1,43 @@
 # Gospel System
 
-Paroles et pistes audio de la chorale **Gospel System** : https://gospelsystem.github.io/Gospel-System/
+App de paroles et de pistes audio par pupitre pour la chorale **Gospel System** : PWA hors ligne, connexion par membre, publication depuis l'app.
 
-Ce dépôt ne contient que les **données**. Le code de l'app est commun avec Zovy Tononkira
-([Zovy-Tononkira](https://github.com/Hasina-Zazahkel/Zovy-Tononkira), édition `gospel`).
+Dépôt **autonome** : code + données. Issu du code de Zovy Tononkira (séparé le 8 novembre 2026) ; plus aucun lien avec le dépôt Zovy.
 
-## Contenu
+## Structure
 
-| Dossier | Rôle |
+| Chemin | Rôle |
 |---|---|
+| `src/` | App (Vite + TypeScript + Preact + signals) |
+| `editions/gospel/edition.json` | Nom, dépôt GitHub, adresse (`basePath`), thème doré, pupitres, fonctions actives |
+| `editions/gospel/public/` | Logo, bannière de connexion, icônes |
 | `data/songs/<id>.cho` | Paroles (format ChordPro de l'app) |
-| `data/setlists/repertoire.json` | Répertoire (ordre des morceaux) |
-| `data/members.json` | Membres et mots de passe (empreintes). Absent = app ouverte sans connexion |
+| `data/setlists/repertoire.json` | Répertoire (parties, ordre) |
+| `data/members.json` | Membres (empreintes PBKDF2). Absent = app ouverte sans connexion |
 | `data/audio/<id>/` | Pistes : `tous.mp3`, `soprano.mp3`, `alto.mp3`, `tenor.mp3`, `basse.mp3` |
+| `scripts/build-data.ts` | Compile `data/` en JSON dans `editions/gospel/public/data/` |
+| `tests/` | Vitest |
 
-Tout se gère depuis l'app (mode éditeur, bouton **PUBLIER**) : pas besoin de modifier ces fichiers à la main.
+## Commandes
+
+```bash
+npm ci
+npm test          # tests
+npm run dev       # développement
+npm run build     # données + app → dist/
+```
 
 ## Mise en ligne
 
-Chaque publication depuis l'app (commit sur `main`) relance `.github/workflows/deploy.yml` :
-le code commun est récupéré, les données de ce dépôt sont compilées, le site est publié sur GitHub Pages
-(2 à 3 minutes). Une reconstruction automatique a lieu chaque nuit pour intégrer les évolutions du code.
+`.github/workflows/deploy.yml` : à chaque commit sur `main` (dont les publications depuis l'app) → tests, build, GitHub Pages.
+Dans le dépôt : Settings → Pages → Source = **GitHub Actions**.
 
-Audio : MP3 mono 64–96 kbit/s conseillé (2 à 3 Mo pour 4 minutes). Fichiers libres de droit uniquement (dépôt public).
+## Changer d'hébergement / de propriétaire
+
+Mettre à jour `editions/gospel/edition.json` :
+
+- `repo.owner` / `repo.repo` / `repo.branch` : dépôt où l'app publie (bouton PUBLIER)
+- `basePath` : chemin du site (`/Gospel-System/` pour `https://<org>.github.io/Gospel-System/`)
+- `manifestId` : identifiant d'installation ; ne pas le changer une fois l'app installée chez les membres
+
+Jeton de publication : **un seul** jeton fin GitHub (Contents : Read and write sur ce dépôt, expiration 1 an), collé sur chaque appareil de l'éditeur.
