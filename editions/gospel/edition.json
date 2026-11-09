@@ -6,7 +6,7 @@
   "basePath": "/Gospel-System/",
   "publicDir": "editions/gospel/public",
   "repo": {
-    "owner": "gospelsystem",
+    "owner": "Gospel-System",
     "repo": "Gospel-System",
     "branch": "main"
   },
