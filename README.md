@@ -2,7 +2,7 @@
 
 App de paroles et de pistes audio par pupitre pour la chorale **Gospel System** : PWA hors ligne, connexion par membre, publication depuis l'app.
 
-Dépôt **autonome** : code + données. Issu du code de Zovy Tononkira (séparé le 8 novembre 2026) ; plus aucun lien avec le dépôt Zovy.
+Dépôt **autonome** : code + données, indépendant des autres applications.
 
 ## Structure
 

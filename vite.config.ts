@@ -30,7 +30,7 @@ export default defineConfig({
         short_name: edition.shortName,
         description: edition.description,
         lang: 'fr',
-        // Identifiant d'app explicite par édition (Zovy : identique à l'implicite, donc aucune réinstallation)
+        // Identifiant d'app explicite par édition (manifestId)
         id: edition.manifestId ?? base,
         start_url: base,
         scope: base,

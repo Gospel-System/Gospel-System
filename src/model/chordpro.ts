@@ -1,5 +1,5 @@
 /**
- * ChordPro allégé Zovy — parse / serialize.
+ * ChordPro allégé Gospel System — parse / serialize.
  *
  * Directives d'en-tête : {title} {artist} {key} {capo} {tags: a, b} {medley: a | b}
  *                        {singers: Hasina=lead, Misa=1ère voix} {musicians: Haja=guitare basse} {notes}

@@ -1,6 +1,6 @@
 import type { AudioTrack } from './audio';
 /**
- * Modèle de données Zovy Tononkira — v1
+ * Modèle de données Gospel System — v1
  * Source de vérité : data/songs/*.cho (ChordPro allégé), compilé en public/data/songs.json.
  */
 

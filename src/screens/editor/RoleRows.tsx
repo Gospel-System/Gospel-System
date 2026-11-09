@@ -15,7 +15,7 @@ export function RoleRows({ rows, kind, onChange, addLabel }: { rows: Row[]; kind
     <div class="rows">
       {rows.map((r, i) => (
         <div class="row" key={i}>
-          <input class="in" type="text" list="zovy-members" placeholder={kind === 'voice' ? 'Chanteur' : 'Musicien'}
+          <input class="in" type="text" list="gospel-members" placeholder={kind === 'voice' ? 'Chanteur' : 'Musicien'}
             value={r.member} onInput={(e) => set(i, { member: (e.target as HTMLInputElement).value })}
             autoComplete="off" autoCapitalize="words" aria-label="Nom" />
           <select class={`in sel ${kind}`} value={r.role} onChange={(e) => set(i, { role: (e.target as HTMLSelectElement).value })}
@@ -36,7 +36,7 @@ export function RoleRows({ rows, kind, onChange, addLabel }: { rows: Row[]; kind
 
 import { useMemo } from 'preact/hooks';
 
-/** Noms déjà utilisés dans le catalogue, proposés à la saisie (datalist #zovy-members). */
+/** Noms déjà utilisés dans le catalogue, proposés à la saisie (datalist #gospel-members). */
 export function MembersDatalist() {
   const state = liveCatalog.value;
   const members = useMemo(() => {
@@ -46,5 +46,5 @@ export function MembersDatalist() {
     });
     return [...set].sort((a, b) => a.localeCompare(b, 'fr'));
   }, [state]);
-  return <datalist id="zovy-members">{members.map((m) => <option value={m} key={m} />)}<option value="Tous" /></datalist>;
+  return <datalist id="gospel-members">{members.map((m) => <option value={m} key={m} />)}<option value="Tous" /></datalist>;
 }

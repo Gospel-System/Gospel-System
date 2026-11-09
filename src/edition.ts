@@ -1,6 +1,6 @@
 /**
- * Édition de l'app (Zovy, Gospel System…) : un seul code, une configuration par édition (editions/<id>/edition.json).
- * L'édition est choisie au build (EDITION=gospel) ; Zovy par défaut.
+ * Édition de l'app Gospel System : une configuration par édition (editions/<id>/edition.json).
+ * L'édition est choisie au build (EDITION=gospel) ; gospel par défaut.
  */
 import gospel from '../editions/gospel/edition.json';
 
