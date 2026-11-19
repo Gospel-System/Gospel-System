@@ -1,10 +1,13 @@
 import { computed, signal } from '@preact/signals';
 import {
-  isAdmin, parseMembers, sameMembers, sessionValid, verify, type Member, type Session,
+  credentialCurrent, isAdmin, makeLocalCredential, normalizeId, parseMembers, sameMembers, sessionValid, validatePersonal,
+  verify, verifyLocal, type LocalCredential, type Member, type Session,
 } from '../model/members';
 import { kvDel, kvGet, kvSet } from './store';
 
 const SESSION_KEY = 'session.v1';
+/** Mots de passe personnels de cet appareil, par identifiant (jamais publiés). */
+const CRED_KEY = 'credentials.v1';
 const OVERRIDE_KEY = 'membersOverride.v1';
 
 /** Liste publiée (null = pas encore chargée). Vide = pas de connexion demandée (premier lancement). */
@@ -54,13 +57,42 @@ export async function loadAuth() {
   }
 }
 
-export async function login(id: string, password: string): Promise<boolean> {
-  const m = await verify(publishedMembers.value ?? [], id, password);
-  if (!m) return false;
-  const s: Session = { id: m.id, admin: !!m.admin, at: Date.now() };
+async function startSession(m: Member) {
+  const s: Session = { id: m.id, admin: !!m.admin, at: Date.now(), bind: m.hash };
   session.value = s;
   await kvSet(SESSION_KEY, s);
-  return true;
+}
+
+const readCreds = async () => (await kvGet<Record<string, LocalCredential>>(CRED_KEY)) ?? {};
+
+/**
+ * Connexion :
+ * - mot de passe personnel déjà créé sur cet appareil (et temporaire inchangé) → seul le personnel est accepté ;
+ * - sinon le mot de passe temporaire est vérifié → `activate` : le membre doit choisir son mot de passe personnel.
+ */
+export async function login(id: string, password: string): Promise<'ok' | 'activate' | 'bad'> {
+  const members = publishedMembers.value ?? [];
+  const m = members.find((x) => x.id === normalizeId(id));
+  const cred = (await readCreds())[normalizeId(id)];
+  if (m && credentialCurrent(cred, m)) {
+    if (!(await verifyLocal(cred, password))) return 'bad';
+    await startSession(m);
+    return 'ok';
+  }
+  return (await verify(members, id, password)) ? 'activate' : 'bad';
+}
+
+/** Première connexion sur cet appareil : enregistre le mot de passe personnel et ouvre la session. Renvoie une erreur ou null. */
+export async function activate(id: string, temporary: string, password: string, confirm: string): Promise<string | null> {
+  const e = validatePersonal(password, confirm, temporary);
+  if (e) return e;
+  const m = await verify(publishedMembers.value ?? [], id, temporary);
+  if (!m) return 'Le mot de passe temporaire n\'est plus valable : recommence la connexion.';
+  const creds = await readCreds();
+  creds[m.id] = await makeLocalCredential(m, password);
+  await kvSet(CRED_KEY, creds);
+  await startSession(m);
+  return null;
 }
 
 export async function logout() {

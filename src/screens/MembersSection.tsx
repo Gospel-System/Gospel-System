@@ -58,8 +58,10 @@ export function MembersSection() {
     <div class="members">
       <h3 class="sheet-h">Membres{membersUnpublished.value ? ' · à publier' : ''}</h3>
       <p class="hint">
-        Identifiant et mot de passe pour ouvrir l'app. Connexion valable 30 jours sur chaque appareil.
-        Protection simple : le site reste public, évite les mots de passe trop courts ou réutilisés ailleurs.
+        Identifiant et mot de passe <b>temporaire</b> à communiquer au membre. À sa première connexion sur un appareil, il choisit son mot
+        de passe personnel (8 caractères minimum), qui reste sur cet appareil. Connexion valable 120 jours.
+        Pour un oubli ou un nouvel appareil : redéfinis un mot de passe temporaire, les appareils du membre se réactivent.
+        Protection simple : le site reste public, ne réutilise pas un mot de passe d'ailleurs.
       </p>
       {first && <p class="msg warn">Aucun membre : l'app s'ouvre sans connexion. Commence par toi-même (admin).</p>}
       {list.map((m) => (
@@ -68,13 +70,13 @@ export function MembersSection() {
             <span class="member-id">{m.id}{m.id === me && <small> (toi)</small>}</span>
             <button class={`chip-btn${m.admin ? ' on' : ''}`} onClick={() => toggleAdmin(m)} aria-pressed={!!m.admin}
               aria-label={`${m.id} : admin`}>admin</button>
-            <button class="chip-btn" onClick={() => { setReset(reset?.id === m.id ? null : { id: m.id, pw: '' }); setErr(null); }}>Mot de passe</button>
+            <button class="chip-btn" onClick={() => { setReset(reset?.id === m.id ? null : { id: m.id, pw: '' }); setErr(null); }}>Réinitialiser</button>
             <button class="icon-btn del" aria-label={`Retirer ${m.id}`} onClick={() => remove(m)}><IconClose size={24} /></button>
           </div>
           {reset?.id === m.id && (
             <div class="row member-reset">
-              <input class="in" type="text" autoComplete="off" autoCapitalize="none" spellcheck={false} placeholder="Nouveau mot de passe"
-                value={reset.pw} onInput={(e) => setReset({ id: m.id, pw: (e.target as HTMLInputElement).value })} aria-label={`Nouveau mot de passe pour ${m.id}`} />
+              <input class="in" type="text" autoComplete="off" autoCapitalize="none" spellcheck={false} placeholder="Nouveau mot de passe temporaire"
+                value={reset.pw} onInput={(e) => setReset({ id: m.id, pw: (e.target as HTMLInputElement).value })} aria-label={`Nouveau mot de passe temporaire pour ${m.id}`} />
               <button class="btn primary small" disabled={busy || !reset.pw} onClick={doReset}>Changer</button>
             </div>
           )}
@@ -84,8 +86,8 @@ export function MembersSection() {
       <div class="member-add">
         <input class="in" type="text" autoComplete="off" autoCapitalize="none" spellcheck={false} placeholder="Identifiant"
           value={id} onInput={(e) => setId((e.target as HTMLInputElement).value)} aria-label="Identifiant du nouveau membre" />
-        <input class="in" type="text" autoComplete="off" autoCapitalize="none" spellcheck={false} placeholder="Mot de passe"
-          value={pw} onInput={(e) => setPw((e.target as HTMLInputElement).value)} aria-label="Mot de passe du nouveau membre" />
+        <input class="in" type="text" autoComplete="off" autoCapitalize="none" spellcheck={false} placeholder="Mot de passe temporaire"
+          value={pw} onInput={(e) => setPw((e.target as HTMLInputElement).value)} aria-label="Mot de passe temporaire du nouveau membre" />
         <label class="member-admin">
           <input type="checkbox" checked={first || admin} disabled={first} onChange={(e) => setAdmin((e.target as HTMLInputElement).checked)} />
           Admin {first && <small>(obligatoire pour le premier membre)</small>}
