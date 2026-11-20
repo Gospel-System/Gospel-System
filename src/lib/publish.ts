@@ -78,6 +78,8 @@ export async function checkToken(token: string): Promise<void> {
 
 export interface PublishResult {
   commitUrl: string;
+  /** Commit créé (pour suivre son déploiement) ; vide si rien n'a été envoyé. */
+  sha: string;
   files: number;
   /** Modifs de sections ignorées car la structure distante a changé. */
   warnings: string[];
@@ -100,7 +102,7 @@ export async function publish(token: string, list: SongOverride[], setlist?: Set
   if (!list.length && !setlist && !members && !musician && !audio.length) throw new PublishError('rien à publier');
   if (DEMO) {
     const files = list.length + (setlist ? 1 : 0) + (members ? 1 : 0) + (musician ? 1 : 0) + audio.length;
-    return { commitUrl: '', files, warnings: ['démo : rien n\'a été envoyé sur GitHub'] };
+    return { commitUrl: '', sha: '', files, warnings: ['démo : rien n\'a été envoyé sur GitHub'] };
   }
   if (members && !hasAdmin(members)) throw new PublishError('la liste des membres doit contenir au moins un admin');
   const ref = await gh<{ object: { sha: string } }>(token, `/git/ref/heads/${REPO.branch}`);
@@ -163,7 +165,7 @@ export async function publish(token: string, list: SongOverride[], setlist?: Set
     }
     labels.push(a.label);
   }
-  if (!tree.length) return { commitUrl: '', files: 0, warnings };
+  if (!tree.length) return { commitUrl: '', sha: '', files: 0, warnings };
 
   const newTree = await gh<{ sha: string }>(token, '/git/trees', {
     method: 'POST', body: JSON.stringify({ base_tree: commit.tree.sha, tree }),
@@ -177,5 +179,5 @@ export async function publish(token: string, list: SongOverride[], setlist?: Set
     }),
   });
   await gh(token, `/git/refs/heads/${REPO.branch}`, { method: 'PATCH', body: JSON.stringify({ sha: newCommit.sha }) });
-  return { commitUrl: newCommit.html_url, files: tree.length, warnings };
+  return { commitUrl: newCommit.html_url, sha: newCommit.sha, files: tree.length, warnings };
 }

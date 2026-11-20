@@ -15,6 +15,8 @@ import { IconClose } from '../ui/icons';
 import { FEATURES } from '../edition';
 import { audioPending, audioPublishList, audioUnpublished, cancelTrack, clearOffline, markAudioPublished, offlineUsage } from '../lib/audio';
 import { fmtSize } from '../model/audio';
+import { deploy, trackDeploy } from '../lib/deploy';
+import { DeployStatus } from '../ui/DeployStatus';
 
 const ALL_WORD = EDITION.groupWord === 'chorale' ? 'TOUTE LA CHORALE' : 'TOUT LE GROUPE';
 
@@ -31,7 +33,7 @@ export function PendingBar({ onOpen }: { onOpen: () => void }) {
     <button class="pending" onClick={onOpen}>
       {n > 0
         ? <><b>{n}</b> modification{n > 1 ? 's' : ''} sur cet appareil<span class="go">PUBLIER</span></>
-        : <>Publié · mise en ligne en cours ({sent})<span class="go ghost">DÉTAILS</span></>}
+        : <>{deploy.value?.state === 'success' ? 'Publié · en ligne ✓' : deploy.value?.state === 'failure' ? 'Publié · échec du déploiement ✗' : `Publié · mise en ligne en cours (${sent})`}<span class="go ghost">DÉTAILS</span></>}
     </button>
   );
 }
@@ -97,6 +99,7 @@ export function SettingsSheet({ onClose }: { onClose: () => void }) {
       if (mPending) await markMembersPublished();
       if (hPending) await markHidesPublished();
       if (auPending.length) await markAudioPublished();
+      if (r.sha) void trackDeploy(r.sha);
       setMsg({
         kind: 'ok',
         text: r.files
@@ -199,6 +202,7 @@ export function SettingsSheet({ onClose }: { onClose: () => void }) {
               </button>
             )}
             {msg && <p class={`msg ${msg.kind}`}>{msg.text} {msg.url && <a href={msg.url} target="_blank" rel="noopener">Voir sur GitHub</a>}</p>}
+            {hasToken && <DeployStatus />}
             <h3 class="sheet-h">Mode éditeur</h3>
             <Toggle label="Mode éditeur" on={st.editorOn} onChange={(v) => { setMsg(null); update({ editorOn: v }); }}
               hint={st.editorOn ? 'Modifier et publier depuis cet appareil' : 'Lecture seule : jeton conservé, réactivable ici'} />

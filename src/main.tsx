@@ -4,6 +4,7 @@ import { loadCatalog } from './lib/catalog';
 import { loadOverrides, overridesReady } from './lib/overrides';
 import { initEditor } from './lib/publish';
 import { loadAuth } from './lib/members';
+import { resumeDeploy } from './lib/deploy';
 import { loadMusicianDefaults } from './lib/personal';
 import { loadSetlistOverride } from './lib/setlistEdit';
 import { initWakeLock } from './lib/wakeLock';
@@ -17,7 +18,7 @@ import './themes.css';
 
 applyTheme();
 initWakeLock();
-void initEditor();
+void initEditor().then(resumeDeploy);
 void loadAuth();
 void loadMusicianDefaults();
 void loadCatalog()
