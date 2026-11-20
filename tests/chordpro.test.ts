@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { parseChordPro, serializeChordPro, parseKey } from '../src/model/chordpro';
+import { EDITION } from '../src/edition';
 
 const DIR = join(__dirname, '../data/songs');
 
@@ -61,7 +62,8 @@ describe('catalogue réel', () => {
   it.each(files)('%s : canonique, sans avertissement', (f) => {
     const raw = readFileSync(join(DIR, f), 'utf8');
     const { song, warnings } = parseChordPro(f.slice(0, -4), raw);
-    expect(warnings).toEqual([]);
+    // Même règle que scripts/build-data.ts : l'artiste n'est exigé que si l'édition l'impose (facultatif en chorale)
+    expect(warnings.filter((m) => EDITION.features.artistRequired || m !== 'artiste manquant')).toEqual([]);
     expect(serializeChordPro(song)).toBe(raw);
     expect(parseChordPro(song.id, serializeChordPro(song)).song).toEqual(song);
   });
