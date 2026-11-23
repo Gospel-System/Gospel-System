@@ -19,7 +19,7 @@
   },
   "loginImage": "img/gospel-system-banner.jpg",
   "tracker": {
-    "url": "",
+    "url": "https://gospel-usage.hasina-rasolo.workers.dev",
     "key": "79ab1a3eb385325b16e0e87a68d20aef"
   },
   "theme": {
