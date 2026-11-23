@@ -57,6 +57,9 @@ export async function loadAuth() {
   }
 }
 
+/** Branchement du suivi d'usage (évite une dépendance circulaire avec lib/usage). */
+export const sessionHooks: { onLogin?: (id: string, kind: 'login' | 'activate') => void } = {};
+
 async function startSession(m: Member) {
   const s: Session = { id: m.id, admin: !!m.admin, at: Date.now(), bind: m.hash };
   session.value = s;
@@ -77,6 +80,7 @@ export async function login(id: string, password: string): Promise<'ok' | 'activ
   if (m && credentialCurrent(cred, m)) {
     if (!(await verifyLocal(cred, password))) return 'bad';
     await startSession(m);
+    sessionHooks.onLogin?.(m.id, 'login');
     return 'ok';
   }
   return (await verify(members, id, password)) ? 'activate' : 'bad';
@@ -92,6 +96,7 @@ export async function activate(id: string, temporary: string, password: string, 
   creds[m.id] = await makeLocalCredential(m, password);
   await kvSet(CRED_KEY, creds);
   await startSession(m);
+  sessionHooks.onLogin?.(m.id, 'activate');
   return null;
 }
 

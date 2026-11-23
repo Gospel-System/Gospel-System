@@ -1,0 +1,13 @@
+# Facultatif : déploiement en ligne de commande (npx wrangler deploy). Le guide README.md passe par le tableau de bord.
+name = "gospel-usage"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+[vars]
+ALLOWED_ORIGIN = "https://gospel-system.github.io"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "gospel-usage"
+database_id = "REMPLACER-PAR-L-ID-DE-LA-BASE"
+# Secrets (jamais dans ce fichier) : npx wrangler secret put INGEST_KEY ; npx wrangler secret put ADMIN_KEY

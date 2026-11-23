@@ -9,6 +9,7 @@ import { retryWakeLock, wakeState } from '../lib/wakeLock';
 import { adminSession, currentMembers, loginRequired, logout, markMembersPublished, membersOverride, membersUnpublished, session } from '../lib/members';
 import { SESSION_DAYS } from '../model/members';
 import { MembersSection } from './MembersSection';
+import { UsageSection } from './UsageSection';
 import { MyNotesSection } from './MyNotesSection';
 import { currentDefaultHides, dropHidesOverride, hidesOverride, hidesUnpublished, markHidesPublished } from '../lib/personal';
 import { IconClose } from '../ui/icons';
@@ -193,6 +194,7 @@ export function SettingsSheet({ onClose }: { onClose: () => void }) {
         })}
 
         {hasToken && <MembersSection />}
+        {hasToken && <UsageSection />}
 
         {tokenHere && adminSession.value ? (
           <>

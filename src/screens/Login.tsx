@@ -2,10 +2,11 @@ import { EDITION } from '../edition';
 import { useState } from 'preact/hooks';
 import { activate, login } from '../lib/members';
 import { PERSONAL_MIN } from '../model/members';
+import { trackingEnabled } from '../lib/usage';
 import { DEMO } from '../lib/demo';
 
 const logo = `${import.meta.env.BASE_URL}${EDITION.logo.src}`;
-const HINT = `Accès réservé aux membres ${EDITION.groupWord === 'chorale' ? 'de la chorale' : 'du groupe'}. Identifiant et mot de passe temporaire fournis par ${EDITION.admin} ; tu choisiras ton mot de passe personnel à la première connexion.`;
+const HINT = `Accès réservé aux membres ${EDITION.groupWord === 'chorale' ? 'de la chorale' : 'du groupe'}. Identifiant et mot de passe temporaire fournis par ${EDITION.admin} ; tu choisiras ton mot de passe personnel à la première connexion.${trackingEnabled ? ' L\'ouverture de l\'app est enregistrée (identifiant, date, appareil) pour mesurer son usage.' : ''}`;
 const hero = EDITION.loginImage ? `${import.meta.env.BASE_URL}${EDITION.loginImage}` : null;
 
 /** Page de connexion (dès qu'une liste de membres est publiée). Fonctionne hors ligne. */

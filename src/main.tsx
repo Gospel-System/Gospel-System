@@ -5,6 +5,7 @@ import { loadOverrides, overridesReady } from './lib/overrides';
 import { initEditor } from './lib/publish';
 import { loadAuth } from './lib/members';
 import { resumeDeploy } from './lib/deploy';
+import { initAdminKey, initUsage } from './lib/usage';
 import { loadMusicianDefaults } from './lib/personal';
 import { loadSetlistOverride } from './lib/setlistEdit';
 import { initWakeLock } from './lib/wakeLock';
@@ -20,6 +21,8 @@ applyTheme();
 initWakeLock();
 void initEditor().then(resumeDeploy);
 void loadAuth();
+void initAdminKey();
+initUsage();
 void loadMusicianDefaults();
 void loadCatalog()
   .then(() => Promise.all([loadOverrides(), loadSetlistOverride(), FEATURES.audio ? loadAudioPending() : undefined]))

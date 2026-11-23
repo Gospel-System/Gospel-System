@@ -16,6 +16,8 @@ export interface Edition {
   storage: string;
   logo: { src: string; alt: string; width: number; height: number };
   loginImage?: string;
+  /** Suivi d'usage (Cloudflare Worker, dossier tracker/) : inactif tant que `url` est vide. */
+  tracker?: { url: string; key: string };
   theme: { gold: string; goldDim: string; goldRgb: string; goldHi: string; goldLo: string };
   /** Couleur de la barre système / écran de lancement (manifest). */
   themeColor: string;
