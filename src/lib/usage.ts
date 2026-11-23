@@ -63,9 +63,12 @@ async function track(type: UsageType, member: string, now = Date.now()) {
   void flush();
 }
 
+/** Membre suivi : les comptes administrateur sont exclus des statistiques. */
+const trackedSession = () => { const s = session.value; return s && !s.admin ? s : null; };
+
 /** Ouverture si le membre revient après 30 min d'inactivité (ou lancement de l'app). */
 function maybeOpen() {
-  const s = session.value;
+  const s = trackedSession();
   if (!s) return;
   const now = Date.now();
   const open = shouldOpen(lastActive(), now);
@@ -77,7 +80,7 @@ let started = false;
 export function initUsage() {
   if (!trackingEnabled || started) return;
   started = true;
-  sessionHooks.onLogin = (id, kind) => { void track(kind, id); };
+  sessionHooks.onLogin = (id, kind) => { if (trackedSession()) void track(kind, id); };
   effect(() => { if (session.value) maybeOpen(); });
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') touch();

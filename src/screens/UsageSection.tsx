@@ -42,7 +42,9 @@ export function UsageSection() {
   const [err, setErr] = useState<string | null>(null);
   const [key, setKey] = useState('');
   const keySet = adminKeySet.value;
-  const registered = (publishedMembers.value ?? []).map((m) => m.id);
+  // Les comptes administrateur ne sont pas suivis : ni comptés ni listés
+  const adminIds = new Set((publishedMembers.value ?? []).filter((m) => m.admin).map((m) => m.id));
+  const registered = (publishedMembers.value ?? []).filter((m) => !m.admin).map((m) => m.id);
 
   const load = async (d = days) => {
     setBusy(true); setErr(null);
@@ -70,7 +72,7 @@ export function UsageSection() {
   const t = stats?.totals;
   const now = stats?.now ?? Date.now();
   const byMember = new Map((stats?.members ?? []).map((m) => [m.member, m]));
-  const ids = [...new Set([...registered, ...byMember.keys()])];
+  const ids = [...new Set([...registered, ...byMember.keys()])].filter((id) => !adminIds.has(id));
   const never = ids.filter((id) => !(byMember.get(id)?.opens));
   const active = ids.filter((id) => (byMember.get(id)?.opens ?? 0) > 0)
     .sort((a, b) => (byMember.get(b)!.lastOpen ?? 0) - (byMember.get(a)!.lastOpen ?? 0));
@@ -110,7 +112,7 @@ export function UsageSection() {
               );
             })}
           </ul>
-          <p class="hint">Ouverture = retour au premier plan après 30 min d'inactivité. Connexion = saisie du mot de passe (y compris la première sur un appareil). Conservation : 24 mois.</p>
+          <p class="hint">Ouverture = retour au premier plan après 30 min d'inactivité. Connexion = saisie du mot de passe (y compris la première sur un appareil). Comptes administrateur exclus. Conservation : 24 mois.</p>
         </>
       )}
       <div class="usage-periods">

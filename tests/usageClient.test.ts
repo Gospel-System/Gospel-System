@@ -80,4 +80,13 @@ describe('suivi côté app', () => {
     await usage.flush();
     expect(sent).toHaveLength(0);
   });
+
+  it('compte administrateur : ni ouverture ni connexion enregistrées', async () => {
+    vi.setSystemTime(T0 + 5 * 3_600_000);
+    members.session.value = { id: 'chef', admin: true, at: Date.now(), bind: 'h' };
+    members.sessionHooks.onLogin!('chef', 'login');
+    handlers.visibilitychange();
+    await flushAll();
+    expect(events()).toHaveLength(0);
+  });
 });
